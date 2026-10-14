@@ -11,7 +11,8 @@ export async function POST(request:Request){
         //path to exe file rsa ko
         // const exePath= path.join(process.cwd(),"..","methods","rsa","main.exe");
         // "E:\new_node\rsa-visualizer\app\methods\rsa\main.exe"
-        const exePath= "E:\\new_node\\rsa-visualizer\\app\\methods\\rsa\\main.exe";
+        //main need dependencies mainv2 is burned with dependencies
+        const exePath= "E:\\new_node\\rsa-visualizer\\app\\methods\\rsa\\mainv2.exe";
         
         const workingdir= path.dirname(exePath);
         // if (!fs.existsSync(exePath)) {
