@@ -3,6 +3,10 @@ import {execFile} from "child_process";
 import path from "path";
 import { stdout } from "process";
 import fs from "fs";
+import util from "util"
+
+// Promisify execFile so it works natively with async/await and correct types
+const execFileAsync = util.promisify(execFile);
 export async function POST(request:Request){
     try{
         const {mode,message}= await request.json();
@@ -15,26 +19,20 @@ export async function POST(request:Request){
         const exePath= "E:\\new_node\\rsa-visualizer\\app\\methods\\rsa\\mainv2.exe";
         
         const workingdir= path.dirname(exePath);
-        // if (!fs.existsSync(exePath)) {
-        //     console.error("C++ Binary NOT found at:", exePath);
-        //     }
+        // {cwd:workingdir,timeout:5000}
         
-// {cwd:workingdir,timeout:5000}
         return new Promise ((resolve)=> {
-            console.log(message)
+            // console.log(message)
             execFile(exePath, ["run",message],{cwd:workingdir,timeout:5000}, (error,stdout,stderr)=>{
                 console.log(error)
                 if(error){
                     resolve(NextResponse.json({error: stderr || error.message },{status:500}));
-                    console.log("STDOUT:", stdout);
-  console.log("STDERR:", stderr); // <-- This will show any error text written by C++
-  console.log("ERROR OBJ:", error);
                     return;
                 }
 
                 // parse cpp output to format (display garna lai ui ma)
                 const lines=stdout.split("\n");
-                console.log(lines);
+                // console.log(lines);
                 let n="",e="",d="",ciphertext="",decrypted="";
 
                 lines.forEach(line=>{
@@ -50,6 +48,6 @@ export async function POST(request:Request){
         });
 
     }catch(err:any){
-        return NextResponse.json({error:"ehat gjdfpgj"},{status:505});
+        return NextResponse.json({error:err.message},{status:505});
     }
 }

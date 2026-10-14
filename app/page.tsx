@@ -4,12 +4,13 @@ import { useState } from "react";
 
 type Algorithm = "caesar" | "substitution" | "rsa";
 type Mode = "encrypt" | "decrypt";
-type key="e" | "d" | "n";
+// type key="e" | "d" | "n";
 
 export default function CryptoDashboard() {
   const [algorithm, setAlgorithm] = useState<Algorithm>("rsa");
   const [mode, setMode] = useState<Mode>("encrypt");
   const [inputData, setInputData] = useState("");
+  // const [inputKey, setInputKey] = useState("");
   const [outputData, setOutputData] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -42,10 +43,19 @@ export default function CryptoDashboard() {
       } else {
         // Placeholder for Caesar / Substitution logic
         if (algorithm === "caesar") {
+          const response= await fetch("/api/ceaser/",{
+            method:"POST",
+            headers: {"Content-Type":"application/json"},
+            body: JSON.stringify({mode,key:shift,message:inputData}),
+          });
+          const data=await response.json();
+
           setOutputData(
             mode === "encrypt" 
-              ? `[Caesar Encrypted with shift ${shift}]: ${inputData.split('').map(c => String.fromCharCode(c.charCodeAt(0) + shift)).join('')}`
-              : `[Caesar Decrypted with shift ${shift}]: ${inputData.split('').map(c => String.fromCharCode(c.charCodeAt(0) - shift)).join('')}`
+              ?  `Ciphertext: ${data.res}`
+              // ? `[Caesar Encrypted with shift ${shift}]: ${inputData.split('').map(c => String.fromCharCode(c.charCodeAt(0) + shift)).join('')}`
+              // : `[Caesar Decrypted with shift ${shift}]: ${inputData.split('').map(c => String.fromCharCode(c.charCodeAt(0) - shift)).join('')}`
+              :`Original Text: ${data.res}`
           );
         } else {
           setOutputData(`[Substitution Mock Output for]: ${inputData}`);
